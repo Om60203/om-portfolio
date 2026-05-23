@@ -1,4 +1,5 @@
 "use client";
+import Notes from "./components/Notes";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Projects from "./components/Projects";
@@ -100,8 +101,10 @@ export default function Home() {
       <About />
       <Skills />
       <Projects />
+        <Notes />
       <Contact />
       <Footer />
+    
     </>
   );
 }
