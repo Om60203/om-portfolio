@@ -1,28 +1,46 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
-
-const notesData = [
-  { id: 1, title: "HTML Basics", category: "HTML", description: "Complete HTML tags and structure notes.", color: "#E34F26" },
-  { id: 2, title: "CSS Flexbox and Grid", category: "CSS", description: "Master flexbox and grid layout with examples.", color: "#1572B6" },
-  { id: 3, title: "JavaScript ES6", category: "JavaScript", description: "Arrow functions, promises and async await.", color: "#F7DF1E" },
-  { id: 4, title: "C Programming", category: "C", description: "Pointers, arrays, functions and file handling.", color: "#A8B9CC" },
-  { id: 5, title: "C++ OOPs", category: "C++", description: "Classes, inheritance and polymorphism concepts.", color: "#00599C" },
-  { id: 6, title: "Java Basics", category: "Java", description: "OOP concepts, collections and exception handling.", color: "#ED8B00" },
-  { id: 7, title: "Python Fundamentals", category: "Python", description: "Lists, dictionaries, functions and file IO.", color: "#3776AB" },
-  { id: 8, title: "MySQL Queries", category: "MySQL", description: "SELECT JOIN GROUP BY and subqueries.", color: "#4479A1" },
-  { id: 9, title: "DBMS Concepts", category: "DBMS", description: "ER diagram, normalization and transactions.", color: "#2CB67D" },
-];
+import { useState, useEffect } from "react";
+import { db } from "../lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const categories = ["All", "HTML", "CSS", "JavaScript", "C", "C++", "Java", "Python", "MySQL", "DBMS"];
 
+const colors: { [key: string]: string } = {
+  HTML: "#E34F26",
+  CSS: "#1572B6",
+  JavaScript: "#F7DF1E",
+  C: "#A8B9CC",
+  "C++": "#00599C",
+  Java: "#ED8B00",
+  Python: "#3776AB",
+  MySQL: "#4479A1",
+  DBMS: "#2CB67D",
+};
+
 export default function Notes() {
+  const [notes, setNotes] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("All");
+  const [loading, setLoading] = useState(true);
 
-  const filtered = notesData.filter((note) => {
-    const matchCategory = selected === "All" || note.category === selected;
-    const matchSearch = note.title.toLowerCase().includes(search.toLowerCase());
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "notes"));
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setNotes(data);
+      } catch (error) {
+        console.error("Notes fetch error:", error);
+      }
+      setLoading(false);
+    };
+    fetchNotes();
+  }, []);
+
+  const filtered = notes.filter((note) => {
+    const matchCategory = selected === "All" || (note.category || "") === selected;
+    const matchSearch = (note.title || "").toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
   });
 
@@ -66,37 +84,41 @@ export default function Notes() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-        {filtered.map((note, i) => (
-          <motion.div
-            key={note.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: i * 0.07 }}
-            whileHover={{ scale: 1.03 }}
-            className="bg-[#242629] border border-white/10 rounded-2xl p-6 hover:border-[#7F5AF0]/50 transition-all duration-300"
-          >
-            <span
-              className="text-xs px-3 py-1 rounded-full font-semibold mb-3 inline-block"
-              style={{ backgroundColor: `${note.color}20`, color: note.color }}
+      {loading ? (
+        <p className="text-gray-400 text-lg">Loading notes...</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+          {filtered.map((note, i) => (
+            <motion.div
+              key={note.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.07 }}
+              whileHover={{ scale: 1.03 }}
+              className="bg-[#242629] border border-white/10 rounded-2xl p-6 hover:border-[#7F5AF0]/50 transition-all duration-300"
             >
-              {note.category}
-            </span>
-            <h3 className="text-lg font-bold mb-2">{note.title}</h3>
-            <p className="text-gray-400 text-sm mb-4 leading-relaxed">{note.description}</p>
-            <div className="flex gap-2">
-              <button className="flex-1 py-2 rounded-xl text-sm font-semibold text-white" style={{ backgroundColor: note.color }}>
-                View
-              </button>
-              <button className="flex-1 py-2 rounded-xl text-sm font-semibold bg-[#16161A] border border-white/10">
-                Download
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+              <span
+                className="text-xs px-3 py-1 rounded-full font-semibold mb-3 inline-block"
+                style={{ backgroundColor: `${colors[note.category] || "#7F5AF0"}20`, color: colors[note.category] || "#7F5AF0" }}
+              >
+                {note.category}
+              </span>
+              <h3 className="text-lg font-bold mb-2">{note.title}</h3>
+              <p className="text-gray-400 text-sm mb-4 leading-relaxed">{note.description}</p>
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 rounded-xl text-sm font-semibold text-white" style={{ backgroundColor: colors[note.category] || "#7F5AF0" }}>
+                  View
+                </button>
+                <button className="flex-1 py-2 rounded-xl text-sm font-semibold bg-[#16161A] border border-white/10 hover:border-[#7F5AF0] transition-all">
+                  Download
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
-      {filtered.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <p className="text-gray-500 mt-12 text-lg">No notes found</p>
       )}
     </section>
