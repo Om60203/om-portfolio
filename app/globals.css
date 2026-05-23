@@ -24,3 +24,60 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* Glowing scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #16161A;
+}
+::-webkit-scrollbar-thumb {
+  background: #7F5AF0;
+  border-radius: 10px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glow text effect */
+.glow {
+  text-shadow: 0 0 10px #7F5AF0, 0 0 20px #7F5AF0, 0 0 40px #7F5AF0;
+}
+
+/* Floating animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Glow border pulse */
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 5px #7F5AF0, 0 0 10px #7F5AF0; }
+  50% { box-shadow: 0 0 20px #7F5AF0, 0 0 40px #7F5AF0; }
+  100% { box-shadow: 0 0 5px #7F5AF0, 0 0 10px #7F5AF0; }
+}
+
+.glow-border {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #7F5AF0, #2CB67D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card shine effect */
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}

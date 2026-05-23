@@ -1,4 +1,5 @@
 "use client";
+import ParticlesBackground from "./components/Particles";
 import Navbar from "./components/Navbar";
 import Notes from "./components/Notes";
 import Contact from "./components/Contact";
@@ -23,6 +24,7 @@ export default function Home() {
 
   return (
     <>
+    <ParticlesBackground />
       <Navbar />
 
       <main id="home" className="min-h-screen bg-[#16161A] text-white flex flex-col items-center justify-center px-6 relative overflow-hidden pt-20">
@@ -33,9 +35,10 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10"
+         className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10 floating glow-border"
         >
           <img src="/profile.jpg" alt="Om Awasthi" className="w-full h-full object-cover" />
+          
         </motion.div>
 
         <motion.h1
