@@ -34,7 +34,7 @@ export default function Home() {
           className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10"
         >
           <img
-            src="https://drive.google.com/uc?export=view&id=18LRh9hepti2MKUombdPMNDo93tWHD433"
+          src="/profile.jpg"
             alt="Om Awasthi"
             className="w-full h-full object-cover"
           />
