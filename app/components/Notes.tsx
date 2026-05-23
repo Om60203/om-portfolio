@@ -106,9 +106,9 @@ export default function Notes() {
               <h3 className="text-lg font-bold mb-2">{note.title}</h3>
               <p className="text-gray-400 text-sm mb-4 leading-relaxed">{note.description}</p>
               <div className="flex gap-2">
-                <button className="flex-1 py-2 rounded-xl text-sm font-semibold text-white" style={{ backgroundColor: colors[note.category] || "#7F5AF0" }}>
+                <a href={`/notes/${note.id}`} className="flex-1 py-2 rounded-xl text-sm font-semibold text-white text-center transition-all hover:opacity-90" style={{ backgroundColor: colors[note.category] || "#7F5AF0" }}>
                   View
-                </button>
+                </a>
                 <button className="flex-1 py-2 rounded-xl text-sm font-semibold bg-[#16161A] border border-white/10 hover:border-[#7F5AF0] transition-all">
                   Download
                 </button>
