@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "./components/Navbar";
 import Notes from "./components/Notes";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -22,25 +23,21 @@ export default function Home() {
 
   return (
     <>
-      <main className="min-h-screen bg-[#16161A] text-white flex flex-col items-center justify-center px-6 relative overflow-hidden">
+      <Navbar />
+
+      <main id="home" className="min-h-screen bg-[#16161A] text-white flex flex-col items-center justify-center px-6 relative overflow-hidden pt-20">
         
-        {/* Background glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#7F5AF0] opacity-10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Profile circle */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
           className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10"
         >
-          <img
-          src="/profile.jpg"
-            alt="Om Awasthi"
-            className="w-full h-full object-cover"
-          />
+          <img src="/profile.jpg" alt="Om Awasthi" className="w-full h-full object-cover" />
         </motion.div>
-        {/* Name */}
+
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,7 +47,6 @@ export default function Home() {
           Hi, I'm <span className="text-[#7F5AF0]">Om Awasthi</span>
         </motion.h1>
 
-        {/* Typing role */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +64,6 @@ export default function Home() {
           </motion.span>
         </motion.div>
 
-        {/* College */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -78,7 +73,6 @@ export default function Home() {
           Allenhouse Business School — BCA
         </motion.p>
 
-        {/* Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,13 +92,12 @@ export default function Home() {
 
       </main>
 
-      <About />
-      <Skills />
-      <Projects />
-        <Notes />
-      <Contact />
+      <div id="about"><About /></div>
+      <div id="skills"><Skills /></div>
+      <div id="projects"><Projects /></div>
+      <div id="notes"><Notes /></div>
+      <div id="contact"><Contact /></div>
       <Footer />
-    
     </>
   );
 }
