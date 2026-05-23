@@ -80,14 +80,31 @@ export default function NotePage() {
           </span>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{note.title}</h1>
           <p className="text-gray-400 leading-relaxed text-lg">{note.description}</p>
+
+          {note.pdfUrl && (
+            <div className="mt-6 p-4 bg-[#16161A] rounded-xl border border-white/10">
+              <p className="text-green-400 text-sm font-semibold mb-2">📄 PDF Available</p>
+              <p className="text-gray-400 text-xs">Download karke offline padh sakte ho!</p>
+            </div>
+          )}
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex gap-4">
-          <button className="flex-1 py-4 rounded-2xl font-semibold text-white text-lg transition-all duration-300 hover:scale-105" style={{ backgroundColor: color }} onClick={() => alert("PDF download coming soon!")}>
-            Download Notes
+          <button
+            className="flex-1 py-4 rounded-2xl font-semibold text-white text-lg transition-all duration-300 hover:scale-105 hover:opacity-90"
+            style={{ backgroundColor: color }}
+            onClick={() => {
+              if (note.pdfUrl) {
+                window.open(note.pdfUrl, "_blank");
+              } else {
+                alert("Is note ka PDF available nahi hai!");
+              }
+            }}
+          >
+            {note.pdfUrl ? "⬇️ Download PDF" : "📄 PDF Coming Soon"}
           </button>
           <a href="/#notes" className="px-8 py-4 rounded-2xl font-semibold border border-white/20 hover:border-[#7F5AF0] transition-all duration-300 hover:scale-105">
-            Back
+            ← Back
           </a>
         </motion.div>
 
