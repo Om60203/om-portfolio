@@ -1,16 +1,35 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
-    setForm({ name: "", email: "", message: "" });
+    setLoading(true);
+    try {
+      await emailjs.send(
+        "service_kijuncc",
+        "template_yrddpos",
+        {
+          from_name: form.name,
+          from_email: form.email,
+          message: form.message,
+        },
+        "lsMHJIwyB09wVSAXx"
+      );
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 4000);
+    } catch (error) {
+      alert("Message send nahi hua, dobara try karo!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,9 +114,10 @@ export default function Contact() {
           />
           <button
             type="submit"
-            className="py-3 rounded-xl bg-[#7F5AF0] hover:bg-[#6B46E0] font-semibold transition-all duration-300 hover:scale-105"
+            disabled={loading}
+            className="py-3 rounded-xl bg-[#7F5AF0] hover:bg-[#6B46E0] font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50"
           >
-            {sent ? "✅ Message Sent!" : "Send Message 🚀"}
+            {loading ? "Sending..." : sent ? "✅ Message Sent!" : "Send Message 🚀"}
           </button>
         </motion.form>
 
