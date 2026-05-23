@@ -31,11 +31,14 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10 bg-[#7F5AF0] flex items-center justify-center text-3xl font-bold text-white"
+          className="w-32 h-32 rounded-full border-4 border-[#7F5AF0] overflow-hidden mb-6 z-10"
         >
-          OA
+          <img
+            src="https://drive.google.com/uc?export=view&id=18LRh9hepti2MKUombdPMNDo93tWHD433"
+            alt="Om Awasthi"
+            className="w-full h-full object-cover"
+          />
         </motion.div>
-
         {/* Name */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
