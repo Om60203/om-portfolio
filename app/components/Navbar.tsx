@@ -17,18 +17,22 @@ export default function Navbar() {
           Om <span className="text-[#7F5AF0]">Awasthi</span>
         </a>
 
-        <div className="hidden md:flex gap-8">
+        <div className="hidden md:flex gap-8 items-center">
           <a href="#home" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">Home</a>
           <a href="#about" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">About</a>
           <a href="#skills" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">Skills</a>
           <a href="#projects" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">Projects</a>
           <a href="#notes" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">Notes</a>
           <a href="#contact" className="text-gray-400 hover:text-[#7F5AF0] transition-colors duration-300 text-sm font-medium">Contact</a>
+          <a href="/login" className="px-4 py-2 bg-[#7F5AF0] hover:bg-[#6B46E0] rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-105">Login</a>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="md:hidden text-white text-2xl">
-          {open ? "X" : "="}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <a href="/login" className="px-3 py-1 bg-[#7F5AF0] rounded-xl text-xs font-semibold text-white">Login</a>
+          <button onClick={() => setOpen(!open)} className="text-white text-2xl">
+            {open ? "X" : "="}
+          </button>
+        </div>
       </div>
 
       {open && (
