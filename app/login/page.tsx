@@ -192,16 +192,37 @@ export default function LoginPage() {
       <div className="login-bg" />
 
       {/* Stars */}
-      {[...Array(20)].map((_, i) => (
-        <div key={i} className="star" style={{
-          width: Math.random() * 3 + 1 + "px",
-          height: Math.random() * 3 + 1 + "px",
-          top: Math.random() * 60 + "%",
-          left: Math.random() * 100 + "%",
-          animationDelay: Math.random() * 2 + "s",
-          animationDuration: Math.random() * 2 + 1.5 + "s"
-        }} />
-      ))}
+      {[
+  { w: 2, h: 2, t: 5, l: 10, d: 0.5, dur: 2 },
+  { w: 1, h: 1, t: 10, l: 25, d: 1, dur: 1.5 },
+  { w: 3, h: 3, t: 15, l: 40, d: 0.2, dur: 2.5 },
+  { w: 2, h: 2, t: 8, l: 55, d: 1.5, dur: 1.8 },
+  { w: 1, h: 1, t: 20, l: 70, d: 0.8, dur: 2.2 },
+  { w: 2, h: 2, t: 5, l: 85, d: 0.3, dur: 1.6 },
+  { w: 3, h: 3, t: 12, l: 95, d: 1.2, dur: 2.8 },
+  { w: 1, h: 1, t: 25, l: 15, d: 0.6, dur: 2 },
+  { w: 2, h: 2, t: 18, l: 30, d: 1.8, dur: 1.7 },
+  { w: 3, h: 3, t: 7, l: 50, d: 0.4, dur: 2.3 },
+  { w: 1, h: 1, t: 22, l: 65, d: 1.1, dur: 1.9 },
+  { w: 2, h: 2, t: 3, l: 78, d: 0.7, dur: 2.6 },
+  { w: 3, h: 3, t: 30, l: 88, d: 1.4, dur: 2.1 },
+  { w: 1, h: 1, t: 35, l: 5, d: 0.9, dur: 1.5 },
+  { w: 2, h: 2, t: 40, l: 20, d: 1.6, dur: 2.4 },
+  { w: 3, h: 3, t: 45, l: 35, d: 0.1, dur: 1.8 },
+  { w: 1, h: 1, t: 50, l: 60, d: 1.3, dur: 2.7 },
+  { w: 2, h: 2, t: 55, l: 75, d: 0.5, dur: 2 },
+  { w: 3, h: 3, t: 2, l: 90, d: 1.7, dur: 1.6 },
+  { w: 1, h: 1, t: 28, l: 45, d: 0.8, dur: 2.2 },
+].map((star, i) => (
+  <div key={i} className="star" style={{
+    width: star.w + "px",
+    height: star.h + "px",
+    top: star.t + "%",
+    left: star.l + "%",
+    animationDelay: star.d + "s",
+    animationDuration: star.dur + "s"
+  }} />
+))}
 
       {/* Clouds */}
       <div className="cloud" style={{ width: "120px", height: "30px", top: "10%", left: "5%" }} />
