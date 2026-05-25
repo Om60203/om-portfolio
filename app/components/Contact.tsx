@@ -26,14 +26,26 @@ export default function Contact() {
       setForm({ name: "", email: "", message: "" });
       setTimeout(() => setSent(false), 4000);
     } catch (error) {
-      alert("Message send nahi hua, dobara try karo!");
+      alert("Message could not be sent, please try again!");
     } finally {
       setLoading(false);
     }
   };
 
+  const glassStyle = {
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.12)",
+  };
+
+  const inputStyle = {
+    background: "rgba(255,255,255,0.06)",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(255,255,255,0.15)",
+  };
+
   return (
-    <section className="min-h-screen bg-[#0f0f13] text-white flex flex-col items-center justify-center px-6 py-20">
+    <section className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center px-6 py-20">
 
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
@@ -48,39 +60,39 @@ export default function Contact() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="text-gray-400 mb-12 text-center"
+        className="text-gray-200 mb-12 text-center"
       >
         Feel free to reach out anytime!
       </motion.p>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12">
 
-        {/* Left — Info */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="flex flex-col gap-6"
         >
-          <div className="bg-[#242629] border border-white/10 rounded-2xl p-6">
-            <p className="text-[#7F5AF0] font-semibold mb-1">📧 Email</p>
-            <p className="text-gray-300 text-sm">omawasthi379@gmail.com</p>
-          </div>
-          <div className="bg-[#242629] border border-white/10 rounded-2xl p-6">
-            <p className="text-[#2CB67D] font-semibold mb-1">💼 LinkedIn</p>
-            <p className="text-gray-300 text-sm">Om Awasthi</p>
-          </div>
-          <div className="bg-[#242629] border border-white/10 rounded-2xl p-6">
-            <p className="text-[#F5A623] font-semibold mb-1">📸 Instagram</p>
-            <p className="text-gray-300 text-sm">@om_awasthi11</p>
-          </div>
-          <div className="bg-[#242629] border border-white/10 rounded-2xl p-6">
-            <p className="text-gray-400 font-semibold mb-1">🐙 GitHub</p>
-            <p className="text-gray-300 text-sm">github.com/Om60203</p>
-          </div>
+          {[
+            { color: "#7F5AF0", icon: "📧", label: "Email", value: "omawasthi379@gmail.com" },
+            { color: "#2CB67D", icon: "💼", label: "LinkedIn", value: "Om Awasthi" },
+            { color: "#F5A623", icon: "📸", label: "Instagram", value: "@om_awasthi11" },
+            { color: "#ffffff", icon: "🐙", label: "GitHub", value: "github.com/Om60203" },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="rounded-2xl p-6"
+              style={glassStyle}
+            >
+              <p className="font-semibold mb-1" style={{ color: item.color }}>{item.icon} {item.label}</p>
+              <p className="text-gray-200 text-sm">{item.value}</p>
+            </motion.div>
+          ))}
         </motion.div>
 
-        {/* Right — Form */}
         <motion.form
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -94,7 +106,8 @@ export default function Contact() {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
-            className="bg-[#242629] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7F5AF0] transition-all duration-300"
+            className="rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:outline-none transition-all duration-300"
+            style={inputStyle}
           />
           <input
             type="email"
@@ -102,7 +115,8 @@ export default function Contact() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
-            className="bg-[#242629] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7F5AF0] transition-all duration-300"
+            className="rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:outline-none transition-all duration-300"
+            style={inputStyle}
           />
           <textarea
             placeholder="Your Message"
@@ -110,12 +124,17 @@ export default function Contact() {
             onChange={(e) => setForm({ ...form, message: e.target.value })}
             required
             rows={5}
-            className="bg-[#242629] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7F5AF0] transition-all duration-300 resize-none"
+            className="rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:outline-none transition-all duration-300 resize-none"
+            style={inputStyle}
           />
           <button
             type="submit"
             disabled={loading}
-            className="py-3 rounded-xl bg-[#7F5AF0] hover:bg-[#6B46E0] font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50"
+            className="py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 text-white"
+            style={{
+              background: "linear-gradient(135deg, #7F5AF0, #2CB67D)",
+              boxShadow: "0 4px 20px rgba(127,90,240,0.4)"
+            }}
           >
             {loading ? "Sending..." : sent ? "✅ Message Sent!" : "Send Message 🚀"}
           </button>

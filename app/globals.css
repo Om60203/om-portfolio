@@ -146,3 +146,76 @@ html {
 .pulse-ring {
   animation: pulseRing 2s ease-in-out infinite;
 }
+/* Animated Sky Background */
+.sky-bg {
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 30%, #4a2080 60%, #7b3fa0 80%, #c084e0 100%);
+}
+
+/* Birds Animation */
+@keyframes flyBird {
+  0% { transform: translateX(-100px) translateY(0px); }
+  25% { transform: translateX(25vw) translateY(-20px); }
+  50% { transform: translateX(50vw) translateY(10px); }
+  75% { transform: translateX(75vw) translateY(-15px); }
+  100% { transform: translateX(110vw) translateY(0px); }
+}
+
+.bird {
+  position: fixed;
+  font-size: 20px;
+  animation: flyBird linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Cat Animation */
+@keyframes walkCat {
+  0% { transform: translateX(-50px) scaleX(1); }
+  49% { transform: translateX(100vw) scaleX(1); }
+  50% { transform: translateX(100vw) scaleX(-1); }
+  99% { transform: translateX(-50px) scaleX(-1); }
+  100% { transform: translateX(-50px) scaleX(1); }
+}
+
+.cat {
+  position: fixed;
+  font-size: 24px;
+  bottom: 80px;
+  animation: walkCat linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Snow ground */
+.snow-ground-global {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(180deg, #c084e0 0%, #e9d5ff 100%);
+  border-radius: 60% 60% 0 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Mountains */
+.mountain-global {
+  position: fixed;
+  bottom: 60px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Stars global */
+.star-global {
+  position: fixed;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s ease-in-out infinite alternate;
+  z-index: 0;
+  pointer-events: none;
+}

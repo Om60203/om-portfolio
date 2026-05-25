@@ -19,7 +19,7 @@ const skills = [
 
 export default function Skills() {
   return (
-    <section className="min-h-screen bg-[#0f0f13] text-white flex flex-col items-center justify-center px-6 py-20">
+    <section className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center px-6 py-20">
 
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
@@ -34,7 +34,7 @@ export default function Skills() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="text-gray-400 mb-12 text-center"
+        className="text-gray-200 mb-12 text-center"
       >
         Technologies I have worked with
       </motion.p>
@@ -47,22 +47,22 @@ export default function Skills() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.07 }}
             whileHover={{ scale: 1.05 }}
-            className="bg-[#242629] border border-white/10 rounded-2xl p-5 hover:border-[#7F5AF0]/60 transition-all duration-300"
+            className="rounded-2xl p-5 transition-all duration-300"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.12)",
+            }}
           >
-            {/* Icon + Name */}
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">{skill.icon}</span>
-              <span className="font-semibold text-lg">{skill.name}</span>
-              <span 
-                className="ml-auto text-sm font-bold"
-                style={{ color: skill.color }}
-              >
+              <span className="font-semibold text-lg text-white">{skill.name}</span>
+              <span className="ml-auto text-sm font-bold" style={{ color: skill.color }}>
                 {skill.level}%
               </span>
             </div>
 
-            {/* Progress bar */}
-            <div className="w-full bg-[#16161A] rounded-full h-2">
+            <div className="w-full rounded-full h-2" style={{ background: "rgba(255,255,255,0.1)" }}>
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${skill.level}%` }}
