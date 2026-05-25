@@ -130,7 +130,15 @@ export default function AdminPanel() {
 
   // Tabs: "add" | "list" | "categories"
   const [activeTab, setActiveTab] = useState("add");
+ // ───── ABOUT CMS STATES ─────
+const [aboutTitle, setAboutTitle] = useState("");
+const [aboutIcon, setAboutIcon] = useState("");
+const [aboutShortDesc, setAboutShortDesc] = useState("");
+const [aboutBlocks, setAboutBlocks] = useState<Block[]>([]);
 
+const [journeyYear, setJourneyYear] = useState("");
+const [journeyTitle, setJourneyTitle] = useState("");
+const [journeyBlocks, setJourneyBlocks] = useState<Block[]>([]);
   const showSuccess = (msg: string) => {
     setSuccess(msg);
     setTimeout(() => setSuccess(""), 3000);
@@ -257,7 +265,63 @@ export default function AdminPanel() {
     showSuccess(`"${name}" delete ho gayi!`);
     fetchCategories();
   };
+ const handleSaveAboutCard = async () => {
 
+  if (!aboutTitle || !aboutIcon) {
+    setError("Title aur icon bharo!");
+    return;
+  }
+
+  try {
+
+    await addDoc(collection(db, "about_cards"), {
+      title: aboutTitle,
+      icon: aboutIcon,
+      shortDesc: aboutShortDesc,
+      blocks: aboutBlocks,
+      createdAt: new Date(),
+    });
+
+    showSuccess("About card save ho gaya! ✅");
+
+    setAboutTitle("");
+    setAboutIcon("");
+    setAboutShortDesc("");
+    setAboutBlocks([]);
+
+  } catch {
+    setError("About card save nahi hua!");
+  }
+
+};
+
+const handleSaveJourney = async () => {
+
+  if (!journeyYear || !journeyTitle) {
+    setError("Journey details bharo!");
+    return;
+  }
+
+  try {
+
+    await addDoc(collection(db, "journey"), {
+      year: journeyYear,
+      title: journeyTitle,
+      blocks: journeyBlocks,
+      createdAt: new Date(),
+    });
+
+    showSuccess("Journey save ho gaya! ✅");
+
+    setJourneyYear("");
+    setJourneyTitle("");
+    setJourneyBlocks([]);
+
+  } catch {
+    setError("Journey save failed!");
+  }
+
+};
   // ── Login Screen ──
   if (!user) {
     return (
@@ -310,6 +374,16 @@ export default function AdminPanel() {
         </div>
 
         {/* Tabs */}
+        <button
+  onClick={() => setActiveTab("about")}
+  className={`px-6 py-2 rounded-xl font-semibold transition-all ${
+    activeTab === "about"
+      ? "bg-yellow-500 text-black"
+      : "bg-[#242629] text-gray-400"
+  }`}
+>
+  👤 About CMS
+</button>
         <div className="flex gap-3 mb-8 flex-wrap">
           <button onClick={() => setActiveTab("add")}
             className={`px-6 py-2 rounded-xl font-semibold transition-all ${activeTab === "add" ? "bg-[#7F5AF0] text-white" : "bg-[#242629] text-gray-400"}`}>
@@ -406,6 +480,101 @@ export default function AdminPanel() {
         )}
 
         {/* ── CATEGORIES TAB ── */}
+        {/* ── ABOUT CMS TAB ── */}
+{activeTab === "about" && (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-[#242629] border border-white/10 rounded-2xl p-6 mt-6"
+  >
+
+    <h2 className="text-2xl font-bold mb-8 text-yellow-400">
+      👤 About CMS
+    </h2>
+
+    {/* ABOUT CARD */}
+    <div className="mb-12">
+
+      <h3 className="text-lg font-bold mb-4 text-[#7F5AF0]">
+        Add About Card
+      </h3>
+
+      <input
+        type="text"
+        placeholder="Title"
+        value={aboutTitle}
+        onChange={(e) => setAboutTitle(e.target.value)}
+        className="w-full mb-4 bg-[#16161A] border border-white/10 rounded-xl px-4 py-3"
+      />
+
+      <input
+        type="text"
+        placeholder="Icon (🎓)"
+        value={aboutIcon}
+        onChange={(e) => setAboutIcon(e.target.value)}
+        className="w-full mb-4 bg-[#16161A] border border-white/10 rounded-xl px-4 py-3"
+      />
+
+      <input
+        type="text"
+        placeholder="Short Description"
+        value={aboutShortDesc}
+        onChange={(e) => setAboutShortDesc(e.target.value)}
+        className="w-full mb-4 bg-[#16161A] border border-white/10 rounded-xl px-4 py-3"
+      />
+
+      <BlockEditor
+        blocks={aboutBlocks}
+        setBlocks={setAboutBlocks}
+      />
+
+     <button
+  onClick={handleSaveAboutCard}
+  className="mt-4 px-6 py-3 bg-[#7F5AF0] rounded-xl font-semibold"
+>
+  Save About Card
+</button>
+    </div>
+
+    {/* JOURNEY */}
+    <div>
+
+      <h3 className="text-lg font-bold mb-4 text-[#2CB67D]">
+        Add Journey
+      </h3>
+
+      <input
+        type="text"
+        placeholder="Year"
+        value={journeyYear}
+        onChange={(e) => setJourneyYear(e.target.value)}
+        className="w-full mb-4 bg-[#16161A] border border-white/10 rounded-xl px-4 py-3"
+      />
+
+      <input
+        type="text"
+        placeholder="Journey Title"
+        value={journeyTitle}
+        onChange={(e) => setJourneyTitle(e.target.value)}
+        className="w-full mb-4 bg-[#16161A] border border-white/10 rounded-xl px-4 py-3"
+      />
+
+      <BlockEditor
+        blocks={journeyBlocks}
+        setBlocks={setJourneyBlocks}
+      />
+
+    <button
+  onClick={handleSaveJourney}
+  className="mt-4 px-6 py-3 bg-[#2CB67D] rounded-xl font-semibold"
+>
+  Save Journey
+</button>
+
+    </div>
+
+  </motion.div>
+)}
         {activeTab === "categories" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="bg-[#242629] border border-white/10 rounded-2xl p-6">
