@@ -8,12 +8,16 @@ import Skills from "./components/Skills";
 import About from "./components/About";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { db } from "./lib/firebase";
+import { doc, getDoc, setDoc, increment } from "firebase/firestore";
 
 const roles = ["BCA Student", "Web Developer", "Notes Creator", "Tech Enthusiast"];
 
 export default function Home() {
   const [roleIndex, setRoleIndex] = useState(0);
+  const [visitors, setVisitors] = useState<number | null>(null);
 
+  // Role switcher
   useEffect(() => {
     const interval = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % roles.length);
@@ -21,12 +25,25 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Visitor counter
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        const ref = doc(db, "stats", "visitors");
+        await setDoc(ref, { count: increment(1) }, { merge: true });
+        const snap = await getDoc(ref);
+        if (snap.exists()) setVisitors(snap.data().count);
+      } catch (err) {
+        console.error("Visitor count error:", err);
+      }
+    };
+    trackVisit();
+  }, []);
+
   return (
     <>
       <Navbar />
-
       <main id="home" className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center px-6 relative overflow-hidden pt-20">
-
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -71,10 +88,28 @@ export default function Home() {
           Allenhouse Business School — BCA
         </motion.p>
 
+        {/* Visitor Counter */}
+        {visitors !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-3 z-10 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold"
+            style={{
+              background: "rgba(127,90,240,0.15)",
+              border: "1px solid rgba(127,90,240,0.3)",
+              color: "#7F5AF0",
+            }}
+          >
+            <span>👁️</span>
+            <span>{visitors.toLocaleString()} visitors</span>
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 0.9 }}
           className="mt-8 flex flex-wrap gap-4 justify-center z-10"
         >
           <button className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-white"
@@ -90,7 +125,6 @@ export default function Home() {
             Contact Me
           </button>
         </motion.div>
-
       </main>
 
       <div id="about"><About /></div>
