@@ -34,7 +34,6 @@ function ContentBlock({ block, color }: { block: any; color: string }) {
   return null;
 }
 
-// ── Share Buttons ──
 function ShareButtons({ title, noteId }: { title: string; noteId: string }) {
   const [copied, setCopied] = useState(false);
   const url = typeof window !== "undefined" ? `${window.location.origin}/notes/${noteId}` : "";
@@ -50,22 +49,19 @@ function ShareButtons({ title, noteId }: { title: string; noteId: string }) {
     <div className="mt-6 pt-6 border-t border-white/10">
       <p className="text-gray-400 text-xs mb-3">🔗 Share karo:</p>
       <div className="flex gap-2 flex-wrap">
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`}
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`}
           target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
           style={{ background: "rgba(37,211,102,0.15)", border: "1px solid rgba(37,211,102,0.4)", color: "#25D366" }}>
           💬 WhatsApp
         </a>
-        <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`}
+        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`}
           target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
           style={{ background: "rgba(29,161,242,0.15)", border: "1px solid rgba(29,161,242,0.4)", color: "#1DA1F2" }}>
           🐦 Twitter
         </a>
-        <button
-          onClick={handleCopy}
+        <button onClick={handleCopy}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
           style={{ background: "rgba(127,90,240,0.15)", border: "1px solid rgba(127,90,240,0.4)", color: "#7F5AF0" }}>
           {copied ? "✅ Copied!" : "🔗 Copy Link"}
@@ -109,10 +105,25 @@ export default function NotePage() {
     ? note.content
     : note.description ? [{ type: "text", value: note.description }] : [];
 
+  // ── PDF Download — Cloudinary raw URL fix ──
   const handleDownload = async () => {
     if (note.pdfUrl) {
-      try { await updateDoc(doc(db, "notes", id as string), { downloads: increment(1) }); } catch {}
-      window.open(note.pdfUrl, "_blank");
+      try {
+        await updateDoc(doc(db, "notes", id as string), { downloads: increment(1) });
+      } catch {}
+
+      // Cloudinary raw URL ko fl_attachment se force download karао
+      const downloadUrl = note.pdfUrl.includes("cloudinary.com")
+        ? note.pdfUrl.replace("/raw/upload/", "/raw/upload/fl_attachment/")
+        : note.pdfUrl;
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       alert("PDF available nahi hai is note ke liye!");
     }
@@ -122,18 +133,15 @@ export default function NotePage() {
     <div className="min-h-screen bg-transparent text-white px-6 py-12">
       <div className="max-w-4xl mx-auto relative z-10">
 
-        {/* Back button */}
         <motion.a href="/#notes" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           className="inline-flex items-center gap-2 text-gray-200 hover:text-white transition-colors mb-8">
           ← Back to Notes
         </motion.a>
 
-        {/* Header card */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
           className="rounded-2xl p-8 mb-6"
           style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", border: `1px solid rgba(255,255,255,0.15)`, borderTop: `4px solid ${color}` }}>
 
-          {/* Category + Download count */}
           <div className="flex items-center gap-3 flex-wrap mb-4">
             <span className="text-xs px-3 py-1 rounded-full font-semibold" style={{ backgroundColor: `${color}30`, color }}>
               {note.category}
@@ -147,7 +155,6 @@ export default function NotePage() {
 
           <h1 className="text-3xl md:text-4xl font-bold mb-6 text-white">{note.title}</h1>
 
-          {/* Content blocks */}
           <div>
             {blocks.length > 0
               ? blocks.map((block: any, i: number) => <ContentBlock key={i} block={block} color={color} />)
@@ -161,11 +168,9 @@ export default function NotePage() {
             </div>
           )}
 
-          {/* Share Buttons */}
           <ShareButtons title={note.title} noteId={id as string} />
         </motion.div>
 
-        {/* Action buttons */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex gap-4">
           <button
             className="flex-1 py-4 rounded-2xl font-semibold text-white text-lg transition-all duration-300 hover:scale-105 hover:opacity-90"

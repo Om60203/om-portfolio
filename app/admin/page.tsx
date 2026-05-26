@@ -104,8 +104,8 @@ export default function AdminPanel() {
 
   const uploadPDF = async (): Promise<string> => {
     if (!pdfFile) return ""; setUploading(true);
-    const fd = new FormData(); fd.append("file", pdfFile); fd.append("upload_preset", UPLOAD_PRESET); fd.append("resource_type", "raw");
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`, { method: "POST", body: fd });
+    const fd = new FormData(); fd.append("file", pdfFile); fd.append("upload_preset", UPLOAD_PRESET); fd.append("resource_type", "auto");
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: fd });
     const data = await res.json(); setUploading(false); return data.secure_url || "";
   };
 
