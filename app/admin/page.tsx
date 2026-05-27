@@ -62,24 +62,22 @@ export default function AdminPanel() {
   const [user, setUser] = useState<any>(null); const [error, setError] = useState(""); const [success, setSuccess] = useState("");
   const [activeTab, setActiveTab] = useState("add");
 
-  // Notes
   const [notes, setNotes] = useState<any[]>([]); const [title, setTitle] = useState(""); const [category, setCategory] = useState("");
   const [blocks, setBlocks] = useState<Block[]>([]); const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false); const [pdfFile, setPdfFile] = useState<File | null>(null); const [uploading, setUploading] = useState(false);
 
-  // Categories
   const [categories, setCategories] = useState<any[]>([]); const [newCatName, setNewCatName] = useState(""); const [catLoading, setCatLoading] = useState(false);
 
-  // About
   const [aboutCards, setAboutCards] = useState<any[]>([]); const [aboutTitle, setAboutTitle] = useState(""); const [aboutIcon, setAboutIcon] = useState(""); const [aboutShortDesc, setAboutShortDesc] = useState("");
   const [journeyItems, setJourneyItems] = useState<any[]>([]); const [journeyYear, setJourneyYear] = useState(""); const [journeyTitle, setJourneyTitle] = useState("");
 
-  // Projects
   const [projects, setProjects] = useState<any[]>([]);
   const [proj, setProj] = useState({ title: "", description: "", details: "", icon: "🚀", color: "#7F5AF0", github: "", live: "", tagline: "", tech: "", features: "" });
   const [projImages, setProjImages] = useState<string[]>([]);
   const [projEditId, setProjEditId] = useState<string | null>(null);
   const [projLoading, setProjLoading] = useState(false);
+
+  const [users, setUsers] = useState<any[]>([]);
 
   const showSuccess = (msg: string) => { setSuccess(msg); setTimeout(() => setSuccess(""), 3000); };
 
@@ -93,11 +91,12 @@ export default function AdminPanel() {
     const js = await getDocs(collection(db, "journey")); setJourneyItems(js.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => a.year - b.year));
   };
   const fetchProjects = async () => { const s = await getDocs(collection(db, "projects")); setProjects(s.docs.map((d) => ({ id: d.id, ...d.data() }))); };
+  const fetchUsers = async () => { const s = await getDocs(collection(db, "users")); setUsers(s.docs.map((d) => ({ id: d.id, ...d.data() }))); };
 
   const handleLogin = async () => {
     try {
       const r = await signInWithEmailAndPassword(auth, email, password);
-      setUser(r.user); setError(""); fetchNotes(); fetchCategories(); fetchAboutData(); fetchProjects();
+      setUser(r.user); setError(""); fetchNotes(); fetchCategories(); fetchAboutData(); fetchProjects(); fetchUsers();
     } catch { setError("Wrong email or password!"); }
   };
   const handleLogout = async () => { await signOut(auth); setUser(null); };
@@ -109,7 +108,6 @@ export default function AdminPanel() {
     const data = await res.json(); setUploading(false); return data.secure_url || "";
   };
 
-  // Notes CRUD
   const handleSaveNote = async () => {
     if (!title.trim()) { setError("Title bharo!"); return; } if (!category) { setError("Category select karo!"); return; }
     if (blocks.length === 0) { setError("Ek block add karo!"); return; }
@@ -129,7 +127,6 @@ export default function AdminPanel() {
   const handleDelete = async (id: string) => { if (!confirm("Delete?")) return; await deleteDoc(doc(db, "notes", id)); showSuccess("Deleted!"); fetchNotes(); };
   const handleEdit = (n: any) => { setTitle(n.title); setCategory(n.category); setBlocks(Array.isArray(n.content) && n.content.length > 0 ? n.content : n.description ? [{ type: "text", value: n.description }] : []); setEditingId(n.id); setActiveTab("add"); };
 
-  // Categories CRUD
   const handleAddCategory = async () => {
     const name = newCatName.trim(); if (!name) { setError("Naam likho!"); return; }
     if (categories.find((c) => c.name.toLowerCase() === name.toLowerCase())) { setError("Already exists!"); return; }
@@ -139,7 +136,6 @@ export default function AdminPanel() {
   };
   const handleDeleteCategory = async (id: string, name: string) => { if (!confirm(`"${name}" delete?`)) return; await deleteDoc(doc(db, "categories", id)); showSuccess("Deleted!"); fetchCategories(); };
 
-  // About CRUD
   const handleSaveAboutCard = async () => {
     if (!aboutTitle || !aboutIcon) { setError("Title aur icon bharo!"); return; }
     try { await addDoc(collection(db, "about_cards"), { title: aboutTitle, icon: aboutIcon, shortDesc: aboutShortDesc, createdAt: new Date() }); showSuccess("Card saved! ✅"); setAboutTitle(""); setAboutIcon(""); setAboutShortDesc(""); fetchAboutData(); }
@@ -153,7 +149,6 @@ export default function AdminPanel() {
   };
   const handleDeleteJourney = async (id: string) => { if (!confirm("Delete?")) return; await deleteDoc(doc(db, "journey", id)); showSuccess("Deleted!"); fetchAboutData(); };
 
-  // Projects CRUD
   const handleSaveProject = async () => {
     if (!proj.title.trim()) { setError("Project title bharo!"); return; }
     setProjLoading(true); setError("");
@@ -173,7 +168,6 @@ export default function AdminPanel() {
     setProjImages(p.images || []); setProjEditId(p.id); setActiveTab("projects");
   };
 
-  // ── Login ──
   if (!user) return (
     <div className="min-h-screen bg-[#16161A] text-white flex items-center justify-center px-6">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-[#242629] border border-white/10 rounded-2xl p-8 w-full max-w-md">
@@ -187,7 +181,6 @@ export default function AdminPanel() {
     </div>
   );
 
-  // ── Dashboard ──
   return (
     <div className="min-h-screen bg-[#16161A] text-white px-6 py-12">
       <div className="max-w-5xl mx-auto">
@@ -197,9 +190,8 @@ export default function AdminPanel() {
           <button onClick={handleLogout} className="px-4 py-2 border border-red-500 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all">Logout</button>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          {[{ label: "Notes", value: notes.length, color: "#7F5AF0" }, { label: "Projects", value: projects.length, color: "#2CB67D" }, { label: "Categories", value: categories.length, color: "#F5A623" }, { label: "PDF Notes", value: notes.filter(n => n.pdfUrl).length, color: "#E44D7B" }].map((s) => (
+          {[{ label: "Notes", value: notes.length, color: "#7F5AF0" }, { label: "Projects", value: projects.length, color: "#2CB67D" }, { label: "Categories", value: categories.length, color: "#F5A623" }, { label: "Users", value: users.length, color: "#60A5FA" }].map((s) => (
             <div key={s.label} className="bg-[#242629] border border-white/10 rounded-2xl p-4 text-center">
               <p className="text-3xl font-bold" style={{ color: s.color }}>{s.value}</p>
               <p className="text-gray-400 text-xs mt-1">{s.label}</p>
@@ -207,7 +199,6 @@ export default function AdminPanel() {
           ))}
         </div>
 
-        {/* Tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
           <button onClick={() => setActiveTab("add")} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "add" ? "bg-[#7F5AF0] text-white" : "bg-[#242629] text-gray-400"}`}>{editingId ? "✏️ Edit Note" : "➕ Add Note"}</button>
           <button onClick={() => { setActiveTab("list"); fetchNotes(); }} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "list" ? "bg-[#7F5AF0] text-white" : "bg-[#242629] text-gray-400"}`}>📋 Notes ({notes.length})</button>
@@ -215,12 +206,12 @@ export default function AdminPanel() {
           <button onClick={() => { setActiveTab("projectList"); fetchProjects(); }} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "projectList" ? "bg-[#2CB67D] text-white" : "bg-[#242629] text-gray-400"}`}>🗂️ Projects ({projects.length})</button>
           <button onClick={() => { setActiveTab("categories"); fetchCategories(); }} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "categories" ? "bg-[#F5A623] text-black" : "bg-[#242629] text-gray-400"}`}>📁 Categories ({categories.length})</button>
           <button onClick={() => { setActiveTab("about"); fetchAboutData(); }} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "about" ? "bg-yellow-500 text-black" : "bg-[#242629] text-gray-400"}`}>👤 About CMS</button>
+          <button onClick={() => { setActiveTab("users"); fetchUsers(); }} className={`px-5 py-2 rounded-xl font-semibold transition-all text-sm ${activeTab === "users" ? "bg-blue-500 text-white" : "bg-[#242629] text-gray-400"}`}>👥 Users ({users.length})</button>
         </div>
 
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
         {success && <p className="text-green-400 text-sm mb-4">{success}</p>}
 
-        {/* ── ADD NOTE ── */}
         {activeTab === "add" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#242629] border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold mb-6 text-[#2CB67D]">{editingId ? "✏️ Edit Note" : "➕ Add New Note"}</h2>
@@ -245,7 +236,6 @@ export default function AdminPanel() {
           </motion.div>
         )}
 
-        {/* ── NOTES LIST ── */}
         {activeTab === "list" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
             {notes.length === 0 ? <p className="text-gray-400 text-center py-12">Koi note nahi!</p> : notes.map((n) => (
@@ -267,7 +257,6 @@ export default function AdminPanel() {
           </motion.div>
         )}
 
-        {/* ── ADD PROJECT ── */}
         {activeTab === "projects" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#242629] border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold mb-6 text-[#2CB67D]">{projEditId ? "✏️ Edit Project" : "🚀 Add Project"}</h2>
@@ -282,14 +271,13 @@ export default function AdminPanel() {
               </div>
             </div>
             <textarea placeholder="Short Description *" value={proj.description} onChange={(e) => setProj({ ...proj, description: e.target.value })} rows={3} className="w-full bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D] mb-4 resize-none" />
-            <textarea placeholder="Detailed Description (View page pe dikhega)" value={proj.details} onChange={(e) => setProj({ ...proj, details: e.target.value })} rows={5} className="w-full bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D] mb-4 resize-y" />
+            <textarea placeholder="Detailed Description" value={proj.details} onChange={(e) => setProj({ ...proj, details: e.target.value })} rows={5} className="w-full bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D] mb-4 resize-y" />
             <input placeholder="Tech Stack (React, Firebase, Tailwind)" value={proj.tech} onChange={(e) => setProj({ ...proj, tech: e.target.value })} className="w-full bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D] mb-4" />
             <textarea placeholder="Features (har feature new line mein)" value={proj.features} onChange={(e) => setProj({ ...proj, features: e.target.value })} rows={4} className="w-full bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D] mb-4 resize-y" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <input placeholder="GitHub URL" value={proj.github} onChange={(e) => setProj({ ...proj, github: e.target.value })} className="bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D]" />
               <input placeholder="Live Demo URL" value={proj.live} onChange={(e) => setProj({ ...proj, live: e.target.value })} className="bg-[#16161A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#2CB67D]" />
             </div>
-            {/* Images */}
             <div className="mb-6">
               <p className="text-sm text-gray-300 mb-2">🖼️ Project Images (URL add karo)</p>
               {projImages.map((img, i) => (
@@ -307,16 +295,12 @@ export default function AdminPanel() {
           </motion.div>
         )}
 
-        {/* ── PROJECT LIST ── */}
         {activeTab === "projectList" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
             {projects.length === 0 ? <p className="text-gray-400 text-center py-12">Koi project nahi!</p> : projects.map((p) => (
               <div key={p.id} className="bg-[#242629] border border-white/10 rounded-2xl p-5 flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-2xl">{p.icon}</span>
-                    <h3 className="font-bold text-lg">{p.title}</h3>
-                  </div>
+                  <div className="flex items-center gap-3 mb-1"><span className="text-2xl">{p.icon}</span><h3 className="font-bold text-lg">{p.title}</h3></div>
                   <p className="text-gray-400 text-sm">{(p.description || "").substring(0, 80)}...</p>
                   <div className="flex gap-1 mt-2 flex-wrap">
                     {(p.tech || []).slice(0, 4).map((t: string, i: number) => (
@@ -333,7 +317,6 @@ export default function AdminPanel() {
           </motion.div>
         )}
 
-        {/* ── CATEGORIES ── */}
         {activeTab === "categories" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#242629] border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold mb-6 text-[#2CB67D]">🗂️ Manage Categories</h2>
@@ -354,11 +337,9 @@ export default function AdminPanel() {
                 ))}
               </div>
             )}
-            <p className="text-gray-500 text-xs mt-6">💡 Category delete karne se notes delete nahi honge.</p>
           </motion.div>
         )}
 
-        {/* ── ABOUT CMS ── */}
         {activeTab === "about" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
             <div className="bg-[#242629] border border-white/10 rounded-2xl p-6">
@@ -399,6 +380,31 @@ export default function AdminPanel() {
                 </div>
               )}
             </div>
+          </motion.div>
+        )}
+
+        {activeTab === "users" && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
+            <div className="bg-[#242629] border border-white/10 rounded-2xl p-4 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-blue-400">👥 Registered Users ({users.length})</h2>
+              <button onClick={fetchUsers} className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-xl text-sm hover:bg-blue-500/40 transition-all">🔄 Refresh</button>
+            </div>
+            {users.length === 0 ? (
+              <p className="text-gray-400 text-center py-12">Koi user nahi hai abhi! Jab koi login karega tab yahan dikhega.</p>
+            ) : (
+              users.map((u) => (
+                <div key={u.id} className="bg-[#242629] border border-white/10 rounded-2xl p-5 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[#7F5AF0] flex items-center justify-center text-white font-bold flex-shrink-0 overflow-hidden">
+                    {u.photo ? <img src={u.photo} className="w-full h-full object-cover" alt="" /> : (u.name || "U")[0].toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-white">{u.name || "Unknown"}</p>
+                    <p className="text-gray-400 text-sm">{u.email}</p>
+                  </div>
+                  <span className="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">Active</span>
+                </div>
+              ))
+            )}
           </motion.div>
         )}
 
