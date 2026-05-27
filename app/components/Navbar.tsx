@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../lib/AuthContext";
@@ -41,9 +42,19 @@ export default function Navbar() {
       style={{ background: "rgba(26,5,51,0.7)" }}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" className="text-xl font-bold text-white">
-          Om <span className="text-[#7F5AF0]">Awasthi</span>
-        </a>
+        <a href="/" className="flex items-center gap-3">
+  <Image
+    src="/logo.png"
+    alt="Om Awasthi Logo"
+    width={45}
+    height={45}
+    className="rounded-full"
+  />
+
+  <span className="text-xl font-bold text-white">
+    Om <span className="text-[#7F5AF0]">Awasthi</span>
+  </span>
+</a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex gap-8 items-center">
