@@ -88,8 +88,8 @@ export default function Navbar() {
                     <p className="text-white text-sm font-semibold">{userName}</p>
                     <p className="text-gray-400 text-xs">{user.email}</p>
                   </div>
-                  <a href="/settings" className="flex items-center gap-2 px-4 py-3 text-gray-200 hover:bg-white/10 text-sm transition-all">
-                    ⚙️ Settings
+                  <a href="/setting" className="flex items-center gap-2 px-4 py-3 text-gray-200 hover:bg-white/10 text-sm transition-all">
+                    ⚙️ Setting
                   </a>
                   <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-3 text-red-400 hover:bg-red-500/10 text-sm transition-all">
                     🚪 Logout

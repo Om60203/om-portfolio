@@ -5,7 +5,7 @@ import { signOut, updateProfile, updatePassword, EmailAuthProvider, reauthentica
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
+import Link from "next/link";
 export default function SettingsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -154,7 +154,95 @@ export default function SettingsPage() {
             </div>
           </div>
         </motion.div>
+         {/* Features Section */}
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.25 }}
+  className="grid md:grid-cols-2 gap-4 mb-6"
+>
 
+  {/* Upload Notes */}
+  <Link href="/setting/upload">
+    <div
+      className="rounded-2xl p-5 hover:scale-[1.02] transition-all cursor-pointer"
+      style={{
+        background: "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.12)"
+      }}
+    >
+      <h2 className="text-lg font-bold text-[#7F5AF0] mb-2">
+        📚 Upload Notes
+      </h2>
+
+      <p className="text-sm text-gray-400">
+        Share notes with students
+      </p>
+    </div>
+  </Link>
+
+  {/* Bookmarks */}
+ <Link href="/setting/bookmarks">
+    <div
+      className="rounded-2xl p-5 hover:scale-[1.02] transition-all cursor-pointer"
+      style={{
+        background: "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.12)"
+      }}
+    >
+      <h2 className="text-lg font-bold text-pink-400 mb-2">
+        ❤️ Bookmarks
+      </h2>
+
+      <p className="text-sm text-gray-400">
+        View saved notes
+      </p>
+    </div>
+  </Link>
+
+  {/* Problems */}
+  <Link href="/problems">
+    <div
+      className="rounded-2xl p-5 hover:scale-[1.02] transition-all cursor-pointer"
+      style={{
+        background: "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.12)"
+      }}
+    >
+      <h2 className="text-lg font-bold text-yellow-400 mb-2">
+        ❓ Problems Community
+      </h2>
+
+      <p className="text-sm text-gray-400">
+        Ask and solve student doubts
+      </p>
+    </div>
+  </Link>
+
+  {/* Dark Mode */}
+  <div
+    className="rounded-2xl p-5"
+    style={{
+      background: "rgba(255,255,255,0.08)",
+      border: "1px solid rgba(255,255,255,0.12)"
+    }}
+  >
+    <h2 className="text-lg font-bold text-cyan-400 mb-2">
+      🌙 Dark Mode
+    </h2>
+
+    <p className="text-sm text-gray-400 mb-4">
+      Customize website appearance
+    </p>
+
+    <button
+      className="px-4 py-2 rounded-xl bg-[#16161A] border border-white/10 hover:border-cyan-400 transition-all"
+    >
+      Enabled
+    </button>
+  </div>
+
+</motion.div>
         {/* Logout */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <button onClick={handleLogout}
